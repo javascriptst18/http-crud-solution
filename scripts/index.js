@@ -9,20 +9,50 @@ async function fetchAllSnippets() {
   // allSnippets in this function will become 'snippets'
   // inside of 'displaySnippets'
   displaySnippets(allSnippets);
+  bindDeleteButtonEvents();
 }
 
 function displaySnippets(snippets) {
   for (let snippet of snippets) {
     let newSnippetElement = `
-      <div class="snippet" id=${snippet.id}>
+      <div class="snippet">
         <p> ${snippet.title} </p>
         <pre><code> ${snippet.code}</code></pre>
         <em> ${snippet.language} </em>
+        <button id="${snippet.id}" class="delete"> X </button>
       </div>
     `;
     snippetsContainer.insertAdjacentHTML('afterbegin', newSnippetElement);
   }
 }
+
+
+function deleteSnippet(id) {
+  fetch(`https://javascriptst18.herokuapp.com/snippets/${id}`, {
+    method: 'DELETE'
+  });
+}
+
+function bindDeleteButtonEvents() {
+  const allDeleteButtons = document.querySelectorAll('.delete');
+  for (let deleteButton of allDeleteButtons) {
+    deleteButton.addEventListener('click', function (event) {
+      const snippetId = event.target.id;
+      deleteSnippet(snippetId);
+      event.target.parentElement.remove();
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
 
 submitNewSnippetForm.addEventListener('submit', function (event) {
   // Prevent the form from submitting, reloading the page
@@ -49,6 +79,8 @@ submitNewSnippetForm.addEventListener('submit', function (event) {
     },
     body: JSON.stringify(newSnippet)
   })
+    .then((response) => response.json())
+    .then((data) => console.log(data));
 });
 
 fetchAllSnippets();
