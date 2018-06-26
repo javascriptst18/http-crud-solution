@@ -26,13 +26,6 @@ function displaySnippets(snippets) {
   }
 }
 
-
-function deleteSnippet(id) {
-  fetch(`https://javascriptst18.herokuapp.com/snippets/${id}`, {
-    method: 'DELETE'
-  });
-}
-
 function bindDeleteButtonEvents() {
   const allDeleteButtons = document.querySelectorAll('.delete');
   for (let deleteButton of allDeleteButtons) {
@@ -44,33 +37,13 @@ function bindDeleteButtonEvents() {
   }
 }
 
+function deleteSnippet(id) {
+  fetch(`https://javascriptst18.herokuapp.com/snippets/${id}`, {
+    method: 'DELETE'
+  });
+}
 
-
-
-
-
-
-
-
-
-
-submitNewSnippetForm.addEventListener('submit', function (event) {
-  // Prevent the form from submitting, reloading the page
-  event.preventDefault();
-
-  /**
-   * Grab every value from every input and create a new object
-   * with these values. These will later be sent to the API with fetch
-   */
-  const newSnippet = {
-    title: event.target.title.value,
-    code: event.target.code.value,
-    language: event.target.language.value
-  }
-
-  /**
-   * Same URL as when fetching
-   */
+function postSnippet(newSnippet) {
   fetch(baseURL, {
     method: 'POST',
     headers: {
@@ -81,6 +54,21 @@ submitNewSnippetForm.addEventListener('submit', function (event) {
   })
     .then((response) => response.json())
     .then((data) => console.log(data));
+}
+
+submitNewSnippetForm.addEventListener('submit', function (event) {
+  // Prevent the form from submitting, reloading the page
+  event.preventDefault();
+  /**
+   * Grab every value from every input and create a new object
+   * with these values. These will later be sent to the API with fetch
+   */
+  const newSnippet = {
+    title: event.target.title.value,
+    code: event.target.code.value,
+    language: event.target.language.value
+  }
+  postSnippet(newSnippet);
 });
 
 fetchAllSnippets();
